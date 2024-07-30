@@ -31,7 +31,12 @@ class AI71Model:
     def get_client(self):
         return OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-    def chat(self, query: str, history: MessageHistory = MessageHistory()):
+    def chat(
+        self,
+        query: str,
+        history: MessageHistory = MessageHistory(),
+        system_prompt: Optional[str] = None,
+    ):
 
         rewritten_query = self.rewrite_query(query)
 

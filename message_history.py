@@ -3,8 +3,8 @@ from typing import List
 
 class Message:
     def __init__(self, content: str, role):
-        self.content = content
         self.role = role
+        self.content = content
 
 
 class MessageHistory:
