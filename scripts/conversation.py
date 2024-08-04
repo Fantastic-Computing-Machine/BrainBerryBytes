@@ -16,36 +16,26 @@ class Conversation:
         self.satisfied = [False] * len(self.probe_questions)
         self.goals_met = all(self.satisfied)
 
-    def __str__(self):
-        return "BaseConversation"
-
     def has_met_goals(self):
         if self.goals_met:
             return True
         goal_threads = []
 
-        for i in range(len(self.probe_questions)):
-            p = self.probe_questions[i]
+        for i, p in enumerate(self.probe_questions):
+            goal_threads.append(self._goal_check(p))
 
-            prompt = "Given the conversation history, answer 'yes' or 'no' "
-            prompt += "to the following question with no elaboration or punctuation.\n"
-            prompt += f"{p}\n"
+        for i, thread in enumerate(goal_threads):
+            self.satisfied[i] = thread.result.value.lower == "yes"
+        self.goals_met = all(self.satisfied)
+        return self.goals_met
 
-            goal_threads.append(
-                GoalThread(
-                    messages=self.history.get_messages(self.context_length),
-                    prompt=prompt,
-                    model=self.model,
-                )
-            )
-            for thread in goal_threads:
-                thread.start()
-            for thread in goal_threads:
-                thread.join()
-            for i, thread in enumerate(goal_threads):
-                self.satisfied[i] = goal_threads[i].result.value.lower == "yes"
-            self.goals_met = all(self.satisfied)
-            return self.goals_met
+    def _goal_check(self, probe_question):
+        prompt = "Given the conversation history, answer 'yes' or 'no' "
+        prompt += "to the following question with no elaboration or punctuation.\n"
+        prompt += f"{probe_question}\n"
+
+        response = self.model.chat(prompt, self.history)
+        return response
 
     def rewrite_query(self, query: str):
         return query
