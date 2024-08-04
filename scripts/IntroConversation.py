@@ -1,8 +1,14 @@
 from .conversation import Conversation
 
+from message_history import Message, MessageHistory
+
+from typing import Dict, List, Any
 
 class IntroConversation(Conversation):
-    def __init__(self, model, args, history, context_length=10):
+
+    def __init__(
+        self, model: Any, args: Dict, history: MessageHistory, context_length=10
+    ):
 
         super().__init__(model, args, history, context_length=context_length)
 
