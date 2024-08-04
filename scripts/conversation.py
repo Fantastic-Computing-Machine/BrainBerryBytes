@@ -25,7 +25,7 @@ class Conversation:
             goal_threads.append(self._goal_check(p))
 
         for i, thread in enumerate(goal_threads):
-            self.satisfied[i] = thread.result.value.lower == "yes"
+            self.satisfied[i] = thread.lower() == "yes"
         self.goals_met = all(self.satisfied)
         return self.goals_met
 
@@ -47,7 +47,7 @@ class Conversation:
                 rewritten_query += f"Goal: {self.goals[i]}\n"
         
         rewritten_query += "Don not provide any reposnse to the goal questions. \n"
-        rewritten_query += "Only respond to the user query, in a natural way that lead to you goal \n"
+        rewritten_query += "Only respond to the user query, in a natural way that lead to your goal \n"
 
         return rewritten_query
 
@@ -56,7 +56,7 @@ class Conversation:
         prompt = self._system_prompt()
         response = self.model.chat(query, self.history, prompt)
         message = Message(role="assistant", content=response)
-        self.history.add_message(message)
+        self.history.add(message)
         return message
 
     def _system_prompt(self):

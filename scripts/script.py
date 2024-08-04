@@ -1,4 +1,6 @@
 import sys
+
+from scripts import ClosingConversation, EmotionalExplorationConversation, MoodAssessmentConversation, PositiveReframingConversation, ProblemSolvingConversation
 sys.path.append('.')
 from ai71_model import AI71Model
 from IntroConversation import IntroConversation
@@ -17,7 +19,12 @@ class TherapyScript:
         self.current_conversation = 0
         self.conversations = []
         self.conversations.append(
-            IntroConversation(model=self.model, args=self.args, history=self.history)
+            IntroConversation(model=self.model, args=self.args, history=self.history),
+            MoodAssessmentConversation(model=self.model, args=self.args, history=self.history),
+            EmotionalExplorationConversation(model=self.model, args=self.args, history=self.history),
+            ProblemSolvingConversation(model=self.model, args=self.args, history=self.history),
+            PositiveReframingConversation(model=self.model, args=self.args, history=self.history),
+            ClosingConversation(model=self.model, args=self.args, history=self.history),
         )
 
     def __str__(self):
@@ -25,7 +32,7 @@ class TherapyScript:
 
     def submit_query(self, user_query: str):
         if self.current_conversation < len(self.conversations):
-            self.history.add(Message("user", user_query))
+            self.history.add(Message(user_query,"user" ))
             self.goal_check()
             self.history.remove_last()
             if self.current_conversation < len(self.conversations):
@@ -33,7 +40,7 @@ class TherapyScript:
                     self.current_conversation
                 ].rewrite_query(user_query)
 
-                self.history.add(Message("user", rewritten_query))
+                self.history.add(Message(rewritten_query,"user" ))
 
                 ai_response = self.conversations[
                     self.current_conversation
