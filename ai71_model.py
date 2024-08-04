@@ -43,7 +43,7 @@ class AI71Model:
 
         rewritten_query = self.rewrite_query(query)
         messages = self.rewrite_history(history, rewritten_query, system_prompt)
-        print(messages)
+        # print(messages)
         response = self.ai71_client.chat.completions.create(
             model=self.model,
             messages=messages,
