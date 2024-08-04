@@ -1,4 +1,3 @@
 from threading import Thread
 
-
-class GoalThread(Thread): ...
+class GoalThread(Thread):

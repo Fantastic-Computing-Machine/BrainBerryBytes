@@ -50,9 +50,7 @@ class AI71Model:
             temperature=self.temperature,
         )
 
-        print(response)
-
-        return response.choices[0].message
+        return response.choices[0].message.content
 
     def rewrite_query(self, query: str):
         # TODO: Write Prompt
@@ -90,13 +88,13 @@ class AI71Model:
 if __name__ == "__main__":
     ai71 = AI71Model()
     history = MessageHistory()
-    history.add(Message("Hello", "user"))
-    history.add(Message("Hello, how are you feeling today?", "assistant"))
-    history.add(Message("I am not feeling good", "user"))
-    history.add(
-        Message(
-            "I am here to listen and support you. How are you feeling today?",
-            "assistant",
-        )
-    )
-    print(ai71.chat("I am not feeling good", history))
+    # history.add(Message("Hello", "user"))
+    # history.add(Message("Hello, how are you feeling today?", "assistant"))
+    # history.add(Message("I am not feeling good", "user"))
+    # history.add(
+    #     Message(
+    #         "I am here to listen and support you. How are you feeling today?",
+    #         "assistant",
+    #     )
+    # )
+    print(ai71.chat("where is earth located ?", history))

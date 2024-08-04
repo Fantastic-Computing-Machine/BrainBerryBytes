@@ -1,4 +1,7 @@
-from .IntroConversation import IntroConversation
+import sys
+sys.path.append('.')
+from ai71_model import AI71Model
+from IntroConversation import IntroConversation
 from message_history import Message, MessageHistory
 
 from typing import Dict, List, Any
@@ -39,5 +42,10 @@ class TherapyScript:
                 return ai_response
 
     def goal_check(self):
+        if self.conversations[self.current_conversation].has_met_goals():
+            self.current_conversation += 1
 
-        pass
+if __name__ == "__main__":
+    therapy = TherapyScript(model= AI71Model(), args={}, history=MessageHistory())
+    a = therapy.submit_query("Hello")
+    print(a.content)

@@ -1,4 +1,4 @@
-from .conversation import Conversation
+from conversation import Conversation
 
 from message_history import Message, MessageHistory
 
