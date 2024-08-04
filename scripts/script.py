@@ -10,6 +10,10 @@ class TherapyScript:
         self.current_conversation = 0
         self.conversations = [
             IntroConversation,
+            # MoodDetection,
+            # MoodImprovement,
+            # CheerConversation,
+            # EndConversation
         ]
         self.context_length = 10
 
