@@ -2,7 +2,8 @@ from typing import List
 
 
 class Message:
-    def __init__(self, content: str, role):
+
+    def __init__(self, content: str, role: str):
         self.role = role
         self.content = content
 
@@ -14,7 +15,7 @@ class MessageHistory:
         if messages:
             self.history += messages
 
-    def add_message(self, message: Message):
+    def add(self, message: Message):
         self.history.append(message)
 
     def get_messages(self, count: int = -1):
