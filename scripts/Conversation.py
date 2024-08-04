@@ -1,7 +1,4 @@
-from re import M
-
 from message_history import Message
-from reference import GoalThread
 
 
 class Conversation:
@@ -29,35 +26,38 @@ class Conversation:
         self.goals_met = all(self.satisfied)
         return self.goals_met
 
-    def _goal_check(self, probe_question):
+    def _goal_check(self, probe_question) -> str:
         prompt = "Given the conversation history, answer 'yes' or 'no' "
         prompt += "to the following question with no elaboration or punctuation.\n"
         prompt += f"{probe_question}\n"
 
-        response = self.model.chat(prompt, self.history)
-        return response
+        response = self.model.chat(history=self.history, system_prompt=prompt)
+        return response.content
 
-    def rewrite_query(self, query: str):
+    def rewrite_query(self, query: str) -> str:
         # used to rewrite the query to the model by adding the unmet goals to the query
         rewritten_query = f"User Query: \n{query}\n"
         rewritten_query += "Instructions:\n"
-        rewritten_query += "Repeat the user query while continue to persue your goals.\n"
+        rewritten_query += (
+            "Repeat the user query while continue to persue your goals.\n"
+        )
         for i in range(len(self.satisfied)):
             if self.satisfied[i] == False:
                 rewritten_query += f"Goal: {self.goals[i]}\n"
-        
-        rewritten_query += "Don not provide any reposnse to the goal questions. \n"
-        rewritten_query += "Only respond to the user query, in a natural way that lead to your goal \n"
+
+        rewritten_query += "Don not provide any response to the goal questions. \n"
+        rewritten_query += (
+            "Only respond to the user query, in a natural way that lead to your goal \n"
+        )
 
         return rewritten_query
 
     def submit_query(self, query: str) -> Message:
         # used to submit the query to the model and return the assistant response
         prompt = self._system_prompt()
-        response = self.model.chat(query, self.history, prompt)
-        message = Message(role="assistant", content=response)
-        self.history.add(message)
-        return message
+        response = self.model.chat(self.history, prompt)
+        self.history.add(response)
+        return response
 
     def _system_prompt(self):
         # used to provide the system prompt to the model

@@ -1,12 +1,17 @@
 import sys
 sys.path.append('.')
-from scripts.ClosingConversation import ClosingConversation 
-from scripts.EmotionalExplorationConversation import EmotionalExplorationConversation
-from scripts.MoodAssessmentConversation import MoodAssessmentConversation
-from scripts.PositiveReframingConversation import PositiveReframingConversation
-from scripts.ProblemSolvingConversation import ProblemSolvingConversation
+
+
+from scripts.conversations import (
+    ClosingConversation,
+    EmotionalExplorationConversation,
+    MoodAssessmentConversation,
+    PositiveReframingConversation,
+    ProblemSolvingConversation,
+    IntroConversation,
+)
+
 from ai71_model import AI71Model
-from IntroConversation import IntroConversation
 from message_history import Message, MessageHistory
 
 from typing import Dict, List, Any, Optional
