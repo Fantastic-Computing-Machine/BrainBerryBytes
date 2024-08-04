@@ -8,7 +8,7 @@ class Message:
         self.content = content
 
     def __str__(self):
-        return f"{self.role}: {self.content}"
+        return f"\t\t{self.role}: {self.content}"
 
     @property
     def passable(self) -> dict:
@@ -56,3 +56,9 @@ class MessageHistory:
         print(
             f"\nUser: {stats['user']}\nAssistant: {stats['assistant']}\nSystem: {stats['system']}\n"
         )
+
+    def show_history(self):
+        print("*" * 20)
+        for message in self.history:
+            print(message)
+        print("*" * 20)

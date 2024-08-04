@@ -67,6 +67,19 @@ if __name__ == "__main__":
     therapy = TherapyScript(model= AI71Model(), args={}, history=history_session)
     while True:
         user_query = input("Human: ")
+        if user_query.lower() == "exit":
+            break
+        elif user_query.lower() == "stats":
+            print(history_session.get_statistics())
+            continue
+        elif user_query.lower() == "reset":
+            history_session.clear()
+            continue
+        elif user_query.lower() == "show":
+            history_session.show_history()
+            print("\n")
+            continue
+
         response = therapy.submit_query(user_query)
         history_session.add(response)
         print(f"Therapist: {response.content}")
