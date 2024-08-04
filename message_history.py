@@ -7,6 +7,13 @@ class Message:
         self.role = role
         self.content = content
 
+    def __str__(self):
+        return f"{self.role}: {self.content}"
+
+    @property
+    def passable(self) -> dict:
+        return {"role": self.role, "content": self.content}
+
 
 class MessageHistory:
 
@@ -37,3 +44,15 @@ class MessageHistory:
         Load messages from database
         """
         pass
+
+    def get_statistics(self):
+        """
+        Get statistics of the conversation
+        """
+        stats = {"user": 0, "assistant": 0, "system": 0}
+        for message in self.history:
+            if message.role in stats:
+                stats[message.role] += 1
+        print(
+            f"\nUser: {stats['user']}\nAssistant: {stats['assistant']}\nSystem: {stats['system']}\n"
+        )

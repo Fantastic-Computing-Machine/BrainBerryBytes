@@ -32,25 +32,22 @@ class AI71Model:
 
     def chat(
         self,
-        query: str,
         history: MessageHistory = MessageHistory(),
         args: dict = {},
         system_prompt: Optional[str] = None,
-    ):
+    ) -> Message:
 
         if not system_prompt:
             system_prompt = self.system_prompt()
 
-        rewritten_query = self.rewrite_query(query)
-        messages = self.rewrite_history(history, rewritten_query, system_prompt)
-        # print(messages)
+        messages = self.rewrite_history(history=history, system_prompt=system_prompt)
         response = self.ai71_client.chat.completions.create(
             model=self.model,
             messages=messages,
             temperature=self.temperature,
         )
 
-        return response.choices[0].message.content
+        return Message(response.choices[0].message.content, "assistant")
 
     def rewrite_query(self, query: str):
         # TODO: Write Prompt
@@ -65,12 +62,12 @@ class AI71Model:
         return q
 
     def rewrite_history(
-        self, history: MessageHistory, query: str, system_prompt: str
+        self, history: MessageHistory, system_prompt: str
     ) -> List[dict]:
 
         formatted_history = []
         for message in history.get_messages():
-            formatted_history.append(self.make_message(message))
+            formatted_history.append(message.passable)
 
         if system_prompt:
             formatted_history.append({"role": "system", "content": system_prompt})
@@ -86,15 +83,13 @@ class AI71Model:
 
 
 if __name__ == "__main__":
-    ai71 = AI71Model()
     history = MessageHistory()
-    # history.add(Message("Hello", "user"))
-    # history.add(Message("Hello, how are you feeling today?", "assistant"))
-    # history.add(Message("I am not feeling good", "user"))
-    # history.add(
-    #     Message(
-    #         "I am here to listen and support you. How are you feeling today?",
-    #         "assistant",
-    #     )
-    # )
-    print(ai71.chat("where is earth located ?", history))
+    ai71 = AI71Model()
+
+    while True:
+        user_query = input("User -> ")
+        history.add(Message(user_query, "user"))
+        response = ai71.chat(history)
+        print("AI -> ", response.content)
+        history.add(response)
+        print(history.get_statistics())
