@@ -39,17 +39,36 @@ st.set_page_config(
     },
 )
 
+
+# return a greeting message based on the time of the day
+def greeting():
+    import datetime
+
+    current_time = datetime.datetime.now()
+    current_hour = current_time.hour
+
+    if current_hour < 12:
+        return "Good morning! 🌅"
+    elif 12 <= current_hour < 18:
+        return "Good afternoon! 🌞"
+    else:
+        return "Good evening! 🌙"
+
+
 st.title(f"{AGENT_NAME} 🧠")
-st.caption(f"🤖 Chat with {AGENT_NAME} 🔌 by FCM")
+st.caption(f"🤖 Chat with your Personal Therapist Companion 🔌 by FCM")
 
 # Initialize the chat messages history if not already done
 if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content": f"Hi! I am your friendly therapist B3."}
-    ]
+    st.session_state.messages = []
+
 
 # Sidebar for API keys input with separate submit buttons
 with st.sidebar:
+
+    st.header("B3 Therapist", divider=True)
+
+    st.subheader(f"API Configuration")
     with st.form(key='ai71_key_form'):
         AI71_key = st.text_input("AI71 API Key", placeholder="ai71-api...")
         submit_ai71_button = st.form_submit_button(label='Submit AI71 Key')
@@ -71,6 +90,10 @@ with st.sidebar:
     #     else:
     #         st.session_state.valid_groq_key = True
     #         st.session_state.groq_key = Groq_key  # Store the valid Groq key
+
+st.subheader(f":material/diversity_1: {greeting()},")
+st.subheader(f"I am your friendly therapist B3.", divider=True)
+
 
 if st.session_state.get('valid_ai71_key', False):
     if "therapy_bot" not in st.session_state:
@@ -97,11 +120,21 @@ if st.session_state.get('valid_ai71_key', False):
             st.session_state.messages.append({"role": "user", "content": prompt})
 
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
+        with st.chat_message(
+            name=message["role"],
+            avatar=(
+                ":material/diversity_1:"
+                if message["role"] == "assistant"
+                else ":material/person:"
+            ),
+        ):
             st.write(message["content"])
 
-    if st.session_state.messages[-1]["role"] != "assistant":
-        with st.chat_message("assistant"):
+    if (
+        st.session_state.messages
+        and st.session_state.messages[-1]["role"] != "assistant"
+    ):
+        with st.chat_message(name="assistant", avatar=":material/diversity_1:"):
             response_stream = st.session_state.therapy_bot.submit_query(prompt).content
             st.write(response_stream)
             message = {"role": "assistant", "content": response_stream}
