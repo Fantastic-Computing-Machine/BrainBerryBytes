@@ -43,8 +43,8 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="auto",
     menu_items={
-        # "Report a bug": "https://github.com/adiagarwalrock/finvest-ai/issues",
-        # "About": "Finvest AI leverages cutting-edge AI technology to provide instant and comprehensive financial insights.",
+        "Report a bug": "https://github.com/Fantastic-Computing-Machine/BrainBerryBytes/issues",
+        "About": "BrainBerryBytes is a virtual personal companion therapist designed to listen, analyze, and offer supportive solutions to users during both challenging and positive times, enhancing their emotional wellbeing through tailored interactions.",
     },
 )
 
