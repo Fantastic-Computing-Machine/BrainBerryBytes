@@ -3,6 +3,8 @@ import streamlit as st
 from ai71_model import AI71Model
 from message_history import MessageHistory
 from scripts import TherapyScript
+from utility.speech_to_text import SpeechToText
+from audio_recorder_streamlit import audio_recorder
 
 AGENT_NAME = "BrainBerryBytes"
 
@@ -59,24 +61,40 @@ with st.sidebar:
             st.session_state.valid_ai71_key = True
             st.session_state.ai71_key = AI71_key  # Store the valid AI71 key
 
-    with st.form(key='groq_key_form'):
-        Groq_key = st.text_input("Voice API Key", placeholder="powered by Groq")
-        submit_groq_button = st.form_submit_button(label='Submit Groq Key')
+    # with st.form(key='groq_key_form'):
+    #     Groq_key = st.text_input("Voice API Key", placeholder="powered by Groq")
+    #     submit_groq_button = st.form_submit_button(label='Submit Groq Key')
 
-    if submit_groq_button:
-        if not validate_groq_key(Groq_key):
-            st.error("Invalid Groq API key")
-        else:
-            st.session_state.valid_groq_key = True
-            st.session_state.groq_key = Groq_key  # Store the valid Groq key
+    # if submit_groq_button:
+    #     if not validate_groq_key(Groq_key):
+    #         st.error("Invalid Groq API key")
+    #     else:
+    #         st.session_state.valid_groq_key = True
+    #         st.session_state.groq_key = Groq_key  # Store the valid Groq key
 
 if st.session_state.get('valid_ai71_key', False):
     if "therapy_bot" not in st.session_state:
         history_session = MessageHistory()
         st.session_state.therapy_bot = TherapyScript(model=AI71Model(api_key=st.session_state.ai71_key), args={}, history=history_session)
+    audio_bytes = None
+    # if st.session_state.get('valid_groq_key', False):
+    #     speech_to_text = SpeechToText()
+    #     audio_bytes = audio_recorder(
+    #         text="",
+    #         recording_color="#e8b62c",
+    #         neutral_color="#6aa36f",
+    #         icon_name="microphone",
+    #         icon_size="2x",
+    #     )
+    #     if audio_bytes:
+    #         st.audio(audio_bytes, format="audio/wav")
+    #         prompt = speech_to_text.convert(audio_bytes)
+    #         st.session_state.messages.append({"role": "user", "content": prompt})
 
-    if prompt := st.chat_input("Your question"):
-        st.session_state.messages.append({"role": "user", "content": prompt})
+    if audio_bytes == None:
+        prompt = st.chat_input("Your question")
+        if prompt:
+            st.session_state.messages.append({"role": "user", "content": prompt}) 
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
