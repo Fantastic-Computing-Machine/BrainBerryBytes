@@ -5,6 +5,7 @@ from message_history import MessageHistory
 from scripts import TherapyScript
 from utility.speech_to_text import SpeechToText
 from audio_recorder_streamlit import audio_recorder
+from groq import Groq
 
 AGENT_NAME = "BrainBerryBytes"
 
@@ -21,8 +22,16 @@ def validate_groq_key(api_key):
     if api_key == "":
         return False
     try:
-        # Assuming there's a similar method to validate Groq key
-        # Placeholder for actual validation
+        client = Groq(api_key=api_key)
+        client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": "",
+            }
+        ],
+        model="llama3-8b-8192",
+        )
         return True
     except:
         return False
@@ -63,6 +72,10 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 
+# Initialize session state for audio bytes if not already done
+if "audio_bytes" not in st.session_state:
+    st.session_state.audio_bytes = None
+
 # Sidebar for API keys input with separate submit buttons
 with st.sidebar:
 
@@ -80,16 +93,16 @@ with st.sidebar:
             st.session_state.valid_ai71_key = True
             st.session_state.ai71_key = AI71_key  # Store the valid AI71 key
 
-    # with st.form(key='groq_key_form'):
-    #     Groq_key = st.text_input("Voice API Key", placeholder="powered by Groq")
-    #     submit_groq_button = st.form_submit_button(label='Submit Groq Key')
+    with st.form(key='groq_key_form'):
+        Groq_key = st.text_input("Voice API Key", placeholder="powered by Groq")
+        submit_groq_button = st.form_submit_button(label='Submit Groq Key')
 
-    # if submit_groq_button:
-    #     if not validate_groq_key(Groq_key):
-    #         st.error("Invalid Groq API key")
-    #     else:
-    #         st.session_state.valid_groq_key = True
-    #         st.session_state.groq_key = Groq_key  # Store the valid Groq key
+    if submit_groq_button:
+        if not validate_groq_key(Groq_key):
+            st.error("Invalid Groq API key")
+        else:
+            st.session_state.valid_groq_key = True
+            st.session_state.groq_key = Groq_key  # Store the valid Groq key
 
 st.subheader(f":material/diversity_1: {greeting()},")
 st.subheader(f"I am your friendly therapist B3.", divider=True)
@@ -99,25 +112,33 @@ if st.session_state.get('valid_ai71_key', False):
     if "therapy_bot" not in st.session_state:
         history_session = MessageHistory()
         st.session_state.therapy_bot = TherapyScript(model=AI71Model(api_key=st.session_state.ai71_key), args={}, history=history_session)
-    audio_bytes = None
-    # if st.session_state.get('valid_groq_key', False):
-    #     speech_to_text = SpeechToText()
-    #     audio_bytes = audio_recorder(
-    #         text="",
-    #         recording_color="#e8b62c",
-    #         neutral_color="#6aa36f",
-    #         icon_name="microphone",
-    #         icon_size="2x",
-    #     )
-    #     if audio_bytes:
-    #         st.audio(audio_bytes, format="audio/wav")
-    #         prompt = speech_to_text.convert(audio_bytes)
-    #         st.session_state.messages.append({"role": "user", "content": prompt})
+    
+    prompt = None
 
-    if audio_bytes == None:
-        prompt = st.chat_input("Your question")
-        if prompt:
-            st.session_state.messages.append({"role": "user", "content": prompt})
+    if st.session_state.get('valid_groq_key', False):
+        speech_to_text = SpeechToText(api_key=st.session_state.groq_key)
+        audio_bytes = audio_recorder(
+            text="",
+            recording_color="#e8b62c",
+            neutral_color="#6aa36f",
+            icon_name="microphone",
+            icon_size="2x",
+        )
+        if audio_bytes:
+            audio_prompt = speech_to_text.convert(audio_bytes)
+            st.session_state.audio_bytes = audio_bytes  # Save audio bytes to session state
+
+            # Clear audio bytes after processing
+            st.session_state.audio_bytes = None
+            prompt = audio_prompt
+
+    text_prompt = st.chat_input("Your question")
+    
+    if text_prompt:
+        prompt = text_prompt
+    
+    if prompt:
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
     for message in st.session_state.messages:
         with st.chat_message(

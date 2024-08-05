@@ -1,7 +1,7 @@
 import sys
 sys.path.append('.')
 
-
+from groq import Groq
 from scripts.conversations import (
     ClosingConversation,
     EmotionalExplorationConversation,
@@ -53,23 +53,25 @@ class TherapyScript:
 
                 self.history.add(Message(rewritten_query, "user"))
 
-                ai_response: str = self.conversations[
+                ai_response: Message = self.conversations[
                     self.current_conversation
                 ].submit_query(rewritten_query)
 
                 self.history.remove_last()
                 self.history.add(Message(user_query, "user"))
-                response = self.clear_clutter(ai_response)
-                self.history.add(Message(response.content, "assistant"))
+                
+                response = self.clear_clutter(ai_response.content)
+                ai_final_response = Message(response, "assistant")
+                self.history.add(ai_final_response)
                 print(f"HERE: {response}")
-                return response
+                return ai_final_response
             
         return self.conclude_script()
     
-    def clear_clutter(self, ai_response) -> Message:
-        ai_response.content.replace("User:","")
-        ai_response.content.replace("assistant:","")
-        return ai_response
+    def clear_clutter(self, ai_response:str) -> str:
+        r = ai_response.replace("User:","")
+        r = r.replace("assistant:","")
+        return r
 
     def conclude_script(self) -> Message:
         # TODO
@@ -86,6 +88,9 @@ class TherapyScript:
 
 
 if __name__ == "__main__":
+
+
+
     history_session = MessageHistory()
     therapy = TherapyScript(model= AI71Model(), args={}, history=history_session)
     while True:
