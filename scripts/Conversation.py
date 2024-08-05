@@ -39,15 +39,17 @@ class Conversation:
         rewritten_query = f"User Query: \n{query}\n"
         rewritten_query += "Instructions:\n"
         rewritten_query += (
-            "Repeat the user query while continue to persue your goals.\n"
+            "Respond to that user query while continuing to pursue your goals:\n"
         )
         for i in range(len(self.satisfied)):
             if self.satisfied[i] == False:
-                rewritten_query += f"Goal: {self.goals[i]}\n"
+                rewritten_query += f"Goal {i+1}: {self.goals[i]}\n"
 
-        rewritten_query += "Don not provide any response to the goal questions. \n"
         rewritten_query += (
-            "Only respond to the user query, in a natural way that lead to your goal \n"
+            "Do not respond with an answer to those goal questions, simply respond "
+        )
+        rewritten_query += (
+            "to the user query in a natural way that leads to your goals."
         )
 
         return rewritten_query
@@ -56,7 +58,6 @@ class Conversation:
         # used to submit the query to the model and return the assistant response
         prompt = self._system_prompt()
         response = self.model.chat(self.history, prompt)
-        self.history.add(response)
         return response
 
     def _system_prompt(self):

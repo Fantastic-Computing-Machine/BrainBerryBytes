@@ -45,17 +45,21 @@ class TherapyScript:
             self.goal_check()
             self.history.remove_last()
             if self.current_conversation < len(self.conversations):
-                rewritten_query = self.conversations[
+                rewritten_query: str = self.conversations[
                     self.current_conversation
                 ].rewrite_query(user_query)
 
                 self.history.add(Message(rewritten_query, "user"))
 
-                ai_response = self.conversations[
+                ai_response: str = self.conversations[
                     self.current_conversation
                 ].submit_query(rewritten_query)
 
-                return ai_response
+                self.history.remove_last()
+                self.history.add(Message(user_query, "user"))
+                self.history.add(Message(ai_response, "assistant"))
+
+                return self.history.get_messages()[-1]
         return self.conclude_script()
 
     def conclude_script(self) -> Message:
@@ -73,18 +77,15 @@ if __name__ == "__main__":
     while True:
         user_query = input("Human: ")
         if user_query.lower() == "exit":
+            print("Ending Chat...")
             break
-        elif user_query.lower() == "stats":
-            print(history_session.get_statistics())
-            continue
-        elif user_query.lower() == "reset":
+        elif user_query.lower() == "stat":
+            history_session.get_statistics()
+        elif user_query.lower() == "rst":
             history_session.clear()
-            continue
         elif user_query.lower() == "show":
             history_session.show_history()
             print("\n")
-            continue
-
-        response = therapy.submit_query(user_query)
-        history_session.add(response)
-        print(f"Therapist: {response.content}")
+        else:
+            response = therapy.submit_query(user_query)
+            print(f"Therapist: {response.content}")
