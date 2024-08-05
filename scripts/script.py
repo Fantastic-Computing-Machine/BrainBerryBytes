@@ -5,6 +5,7 @@ sys.path.append('.')
 from scripts.conversations import (
     ClosingConversation,
     EmotionalExplorationConversation,
+    FeedbackConversation,
     MoodAssessmentConversation,
     PositiveReframingConversation,
     ProblemSolvingConversation,
@@ -32,6 +33,7 @@ class TherapyScript:
             EmotionalExplorationConversation(model=self.model, args=self.args, history=self.history),
             ProblemSolvingConversation(model=self.model, args=self.args, history=self.history),
             PositiveReframingConversation(model=self.model, args=self.args, history=self.history),
+            FeedbackConversation(model=self.model, args=self.args, history=self.history),
             ClosingConversation(model=self.model, args=self.args, history=self.history),]
         )
 
@@ -57,18 +59,30 @@ class TherapyScript:
 
                 self.history.remove_last()
                 self.history.add(Message(user_query, "user"))
-                self.history.add(Message(ai_response.content, "assistant"))
-
-                return ai_response
+                response = self.clear_clutter(ai_response)
+                self.history.add(Message(response.content, "assistant"))
+                print(f"HERE: {response}")
+                return response
+            
         return self.conclude_script()
+    
+    def clear_clutter(self, ai_response) -> Message:
+        ai_response.content.replace("User:","")
+        ai_response.content.replace("assistant:","")
+        return ai_response
 
     def conclude_script(self) -> Message:
         # TODO
         return Message("Goodbye", "assistant")
 
     def goal_check(self):
+
         if self.conversations[self.current_conversation].has_met_goals():
-            self.current_conversation += 1
+            if str(self.conversations[self.current_conversation]).lower() == "feedbackconversation" :
+                self.current_conversation = 1
+            else :
+                self.current_conversation += 1
+        
 
 
 if __name__ == "__main__":
@@ -86,6 +100,10 @@ if __name__ == "__main__":
         elif user_query.lower() == "show":
             history_session.show_history()
             print("\n")
+        elif user_query.lower() == "curconv":
+            current_converstion_index = therapy.current_conversation
+            curr_conv = therapy.conversations[current_converstion_index]
+            print(f"{current_converstion_index}-> {curr_conv}| satisfied : {curr_conv.satisfied} | has met goals : {curr_conv.goals_met}")
         else:
             response = therapy.submit_query(user_query)
             print(f"Therapist: {response.content}")

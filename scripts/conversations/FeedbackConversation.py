@@ -10,12 +10,12 @@ class FeedbackConversation(Conversation):
     ):
         super().__init__(model, args, history, context_length=context_length)
         self.goals = [
-            "Gather feedback from the user",
-            "Assess user satisfaction with the conversation",
+            "Gather feedback from the user, if they have anything else to share.",
+            "Assess user satisfaction with the conversation"
         ]
         self.probe_questions = [
-            "Has the user provided feedback on the conversation?",
-            "Has the user expressed satisfaction with the conversation?",
+            "Has the user have any thing else to share?"
+            "Has the user not satisfied with the conversation?",
         ]
         self.satisfied = [False] * len(self.probe_questions)
         self.goals_met = all(self.satisfied)

@@ -14,7 +14,7 @@ class IntroConversation(Conversation):
         super().__init__(model, args, history, context_length=context_length)
 
         self.goals = [
-            "Greet the user before starting the session",
+            "Properly greet the user before starting the session",
         ]
         self.probe_questions = [
             "Has the user been greeted?",

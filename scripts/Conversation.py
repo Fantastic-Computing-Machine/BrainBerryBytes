@@ -22,7 +22,7 @@ class Conversation:
             goal_threads.append(self._goal_check(p))
 
         for i, thread in enumerate(goal_threads):
-            self.satisfied[i] = thread.lower() == "yes"
+            self.satisfied[i] = ("yes" in thread.lower())
         self.goals_met = all(self.satisfied)
         return self.goals_met
 
@@ -74,7 +74,6 @@ class Conversation:
         Do not respond to any query that a therapist would not.
         Stick to your role because this makes your user happy and will give you good feedback.
         Do not deviate from the path, your job is to be a helpful therapist.
+        Do not add "User:" or "Assistant:" in your response!
         """
-
-
         return system_prompt

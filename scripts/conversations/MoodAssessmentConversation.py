@@ -10,13 +10,11 @@ class MoodAssessmentConversation(Conversation):
     ):
         super().__init__(model, args, history, context_length=context_length)
         self.goals = [
-            "Assess the current mood of the user",
-            "Describe the mood of the user",
+            "Get description of current mood of the user",
             "Categorize the mood of the user",
         ]
         self.probe_questions = [
             "What is the current state of users mood?",
-            "Can you describe your mood?",
             "can you categorize your mood as positive, negative or neutral?",
         ]
         self.satisfied = [False] * len(self.probe_questions)

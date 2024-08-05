@@ -13,8 +13,8 @@ class AI71Model:
 
     def __init__(
         self,
-        model: str = "tiiuae/falcon-11b",
-        temperature: float = 0.4,
+        model: str = MODELS[1],
+        temperature: float = 0.7,
         args: dict = {},
     ):
         self.model = model

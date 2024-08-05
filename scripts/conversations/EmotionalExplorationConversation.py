@@ -11,7 +11,6 @@ class EmotionalExplorationConversation(Conversation):
         super().__init__(model, args, history, context_length=context_length)
         self.goals = [
             "Understand why the user is feeling down or happy",
-            "",
             "Identify triggers for the user's current mood",
         ]
         self.probe_questions = [
