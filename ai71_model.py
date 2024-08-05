@@ -13,14 +13,15 @@ class AI71Model:
 
     def __init__(
         self,
+        api_key: str = ...,
         model: str = MODELS[1],
         temperature: float = 0.7,
         args: dict = {},
     ):
+        self.api_key = api_key
         self.model = model
         self.temperature: float = temperature
         self.args = args
-
         self.ai71_client = self.get_client()
 
         # User attrs
@@ -28,7 +29,7 @@ class AI71Model:
         self.mood_state: list = args.get("mood_state", [])
 
     def get_client(self):
-        return OpenAI(api_key=API_KEY, base_url=BASE_URL)
+        return OpenAI(api_key=self.api_key, base_url=BASE_URL)
 
     def chat(
         self,
