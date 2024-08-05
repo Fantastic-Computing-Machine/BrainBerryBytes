@@ -5,7 +5,6 @@ from openai import OpenAI
 
 MODELS = ["tiiuae/falcon-11b", "tiiuae/falcon-180b-chat"]
 
-API_KEY = "ai71-api-437ee0ac-2734-4d99-8730-0482e57edd13"
 BASE_URL = "https://api.ai71.ai/v1/"
 
 
