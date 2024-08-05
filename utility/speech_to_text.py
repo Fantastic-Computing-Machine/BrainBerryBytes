@@ -3,8 +3,8 @@ from groq import Groq
 import os
 
 class SpeechToText:
-    def __init__(self, ):
-        self.client = Groq(api_key="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")
+    def __init__(self,api_key ):
+        self.client = Groq(api_key=api_key)
         self.model="whisper-large-v3"
         self.prompt = ""
         self.response_format = "json"

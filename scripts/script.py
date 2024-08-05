@@ -1,7 +1,7 @@
 import sys
 sys.path.append('.')
 
-
+from groq import Groq
 from scripts.conversations import (
     ClosingConversation,
     EmotionalExplorationConversation,
@@ -86,6 +86,9 @@ class TherapyScript:
 
 
 if __name__ == "__main__":
+
+
+
     history_session = MessageHistory()
     therapy = TherapyScript(model= AI71Model(), args={}, history=history_session)
     while True:
