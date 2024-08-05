@@ -57,9 +57,9 @@ class TherapyScript:
 
                 self.history.remove_last()
                 self.history.add(Message(user_query, "user"))
-                self.history.add(Message(ai_response, "assistant"))
+                self.history.add(Message(ai_response.content, "assistant"))
 
-                return self.history.get_messages()[-1]
+                return ai_response
         return self.conclude_script()
 
     def conclude_script(self) -> Message:
