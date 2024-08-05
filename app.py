@@ -34,8 +34,8 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="auto",
     menu_items={
-        # "Report a bug": "https://github.com/adiagarwalrock/finvest-ai/issues",
-        # "About": "Finvest AI leverages cutting-edge AI technology to provide instant and comprehensive financial insights.",
+        "Report a bug": "https://github.com/Fantastic-Computing-Machine/BrainBerryBytes/issues",
+        "About": "BrainBerryBytes is a virtual personal companion therapist designed to listen, analyze, and offer supportive solutions to users during both challenging and positive times, enhancing their emotional wellbeing through tailored interactions.",
     },
 )
 
@@ -94,7 +94,7 @@ if st.session_state.get('valid_ai71_key', False):
     if audio_bytes == None:
         prompt = st.chat_input("Your question")
         if prompt:
-            st.session_state.messages.append({"role": "user", "content": prompt}) 
+            st.session_state.messages.append({"role": "user", "content": prompt})
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
